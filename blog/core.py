@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,joinedload
 
 from fastapi import File, HTTPException,UploadFile
 
@@ -43,19 +43,19 @@ def delete_blog_svc(post_id:int,db:Session):
     return {"message":"blog deleted successfully"}
 
 def publish_post(db:Session):
-    blog = db.query(Blogs).filter(Blogs.status == "publish").all()
+    blog = db.query(Blogs).options(joinedload(Blogs.comments)).filter(Blogs.status == "publish").all()
     if blog == []:
         return {"message":"no publish post"}
     return blog
 
 def draft_post(db:Session):
-    draft = db.query(Blogs).filter(Blogs.status == "draft").all()
+    draft = db.query(Blogs).options(joinedload(Blogs.comments)).filter(Blogs.status == "draft").all()
     if not draft:
         return  {"message":"draft page is empty"}
     return draft
 
 def trashed_blogs(db:Session):
-    trash = db.query(Blogs).filter(Blogs.status == "trash").all()
+    trash = db.query(Blogs).options(joinedload(Blogs.comments)).filter(Blogs.status == "trash").all()
     if not trash:
         return  {"message":"trash page is empty"}
     return trash
@@ -73,7 +73,8 @@ def create_comment(post_id:int,comment:CommentSchema,db:Session):
         return {"message":"post not found"}
     com = Comment(
         content = comment.content,
-        email = comment.email
+        email = comment.email,
+        blog_id = post_id
     )
     db.add(com)
     db.commit()

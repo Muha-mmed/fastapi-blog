@@ -20,6 +20,5 @@ class UpdateBlog(BaseModel):
         from_attribute = True
         
 class CommentSchema(BaseModel):
-    
     content: str
     email: str

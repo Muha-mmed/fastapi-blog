@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "sqlite:///dARb.sql"
+DATABASE_URL = "sqlite:///db.sql"
 
 engine = create_engine(DATABASE_URL)
 local_session = sessionmaker(bind=engine,autoflush=False)
