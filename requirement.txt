@@ -1,0 +1,6 @@
+fastapi
+pydantic
+uvicorn
+sqlalchemy
+python-multipart
+fastapi-admin
