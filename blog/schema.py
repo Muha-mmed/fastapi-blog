@@ -22,3 +22,6 @@ class UpdateBlog(BaseModel):
 class CommentSchema(BaseModel):
     content: str
     email: str
+    
+class UpdateCommentSchema(BaseModel):
+    content: Optional[str] = None

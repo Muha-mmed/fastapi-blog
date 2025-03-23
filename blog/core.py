@@ -3,9 +3,14 @@ from sqlalchemy.orm import Session,joinedload
 from fastapi import File, HTTPException,UploadFile
 
 from blog.model import Blogs, Comment
-from blog.schema import Blogs as blogSchema,CommentSchema, UpdateBlog
+from blog.schema import Blogs as blogSchema,CommentSchema, UpdateBlog,UpdateCommentSchema
 
+def get_blog(post_id,db:Session):
+    return db.query(Blogs).filter(Blogs.id == post_id).first()
 
+def get_comment(comment_id,db):
+    return db.query(Comment).filter(Comment.id == comment_id).first()
+    
 def create_post(blog:blogSchema,image: UploadFile, db:Session):
     blog = Blogs(
         title = blog["title"],
@@ -22,7 +27,7 @@ def create_post(blog:blogSchema,image: UploadFile, db:Session):
     return blog
 
 def update_blog_svc(post_id:int,blog:UpdateBlog,db:Session):
-    post = db.query(Blogs).filter(Blogs.id == post_id).first()
+    post = get_blog(post_id,db)
     if not post:
         return "invalid post id"
     update_data = blog.model_dump(exclude_unset=True)
@@ -35,12 +40,12 @@ def update_blog_svc(post_id:int,blog:UpdateBlog,db:Session):
     return post
 
 def delete_blog_svc(post_id:int,db:Session):
-    post = db.query(Blogs).filter(Blogs.id == post_id).first()
+    post = get_blog(post_id,db)
     if not post:
-        return {"message":"invalid post id"}
+        return None
     db.delete(post)
     db.commit()
-    return {"message":"blog deleted successfully"}
+    db.refresh(post)
 
 def publish_post(db:Session):
     blog = db.query(Blogs).options(joinedload(Blogs.comments)).filter(Blogs.status == "publish").all()
@@ -61,14 +66,16 @@ def trashed_blogs(db:Session):
     return trash
 
 def trash_blog_svc(post_id:int,db:Session):
-    post = db.query(Blogs).filter(Blogs.id == post_id).first()
+    post = get_blog(post_id,db)
     if not post:
-        return "invalid post id"
-    move_to_trash = post.status = "trash"
-    return {"message":"post moved to trash",}
+        return {"message":"invalid post id"}
+    post.status = "trash"
+    db.commit()  # Commit changes to database
+    db.refresh(post) 
+    return {"message":"post moved to trash"}
 
 def create_comment(post_id:int,comment:CommentSchema,db:Session):
-    post = db.query(Blogs).filter(Blogs.id == post_id)
+    post = get_blog(post_id,db)
     if not post:
         return {"message":"post not found"}
     com = Comment(
@@ -80,3 +87,28 @@ def create_comment(post_id:int,comment:CommentSchema,db:Session):
     db.commit()
     db.refresh(com)
     return "comment successfully"
+
+def delete_comment_svc(comment_id:int,email:str,db:Session):
+    comment = get_comment(comment_id,db)
+    if not comment:
+        return {"message":"invalid comment id"}
+    email = db.query(Comment).filter(Comment.email == email).first()
+    if not email:
+        return {"message":"you're not the owner of the comment"}
+    db.delete(comment)
+    db.commit()
+    return {"message":"comment deleted"}
+
+def update_comment_svc(comment_id:int,email:str,comment:UpdateCommentSchema,db:Session):
+    com = get_comment(comment_id,db)
+    if not com:
+        return {"message":"invalid comment id"}
+    email = db.query(Comment).filter(Comment.email == email).first()
+    if not email:
+        return {"message":"you're not the owner of the comment"}
+    new_comment = comment.model_dump(exclude_unset=True)
+    for key,value in new_comment.items():
+        setattr(com,key,value)
+    db.commit()
+    db.refresh(com)
+    return com
