@@ -4,3 +4,4 @@ uvicorn
 sqlalchemy
 python-multipart
 fastapi-admin
+sqladmin
