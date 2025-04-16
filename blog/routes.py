@@ -8,10 +8,16 @@ from utils import CreateStatus
 
 router = APIRouter()
     
+import re
+import uuid
+
+def slugify(title):
+    slug = re.sub(r'[\W_]+', '-', title.lower()).strip('-')
+    return f"{slug}-{uuid.uuid4().hex[:6]}"
     
 @router.post("/")
 async def create(title:str=Form(...),content:str=Form(...),image:UploadFile = File(...),status:CreateStatus=Form(...),db:Session=Depends(get_db)):
-    blog_data = {"title":title,"content":content,"status":status}
+    blog_data = {"title":title,"content":content,"status":status,"slug":slugify(title)}
     blog = create_post(blog_data,image,db) 
     return {"status": "successful", "data": blog}
 

@@ -7,6 +7,7 @@ class Blogs(BaseModel):
     title: str
     content: str
     status: CreateStatus
+    slug:str
     
     class Config:
         from_attribute = True

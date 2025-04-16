@@ -16,7 +16,8 @@ def create_post(blog:blogSchema,image: UploadFile, db:Session):
         title = blog["title"],
         content = blog["content"],
         image= image.filename,
-        status = blog["status"]
+        status = blog["status"],
+        slug = blog["slug"]
     )
     if not blog:
         raise HTTPException(details='heyyy')
