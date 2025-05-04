@@ -1,4 +1,3 @@
-````markdown
 # Beam Blog
 
 Beam Blog is a simple logging API built with FastAPI and SQLite. It allows users to post and comment on blog entries. There's no login required for now, as administrative tasks can be handled via the built-in admin panel powered by SQLAdmin.
@@ -15,10 +14,9 @@ Beam Blog is a simple logging API built with FastAPI and SQLite. It allows users
    ```bash
    git clone https://github.com/Muha-mmed/fastapi-blog.git
    cd beam-blog
-````
+   ```
 
 2. Install dependencies:
-
    ```bash
    pip install -r requirements.txt
    ```
@@ -27,7 +25,6 @@ Beam Blog is a simple logging API built with FastAPI and SQLite. It allows users
    Create a `.env` file in the root directory with the necessary configuration (database URL, secret keys, etc.).
 
 4. Run the server:
-
    ```bash
    uvicorn main:app --reload
    ```
@@ -37,12 +34,13 @@ Beam Blog is a simple logging API built with FastAPI and SQLite. It allows users
 Use your terminal or a tool like [Postman](https://www.postman.com/) to send requests to the API.
 
 Example to create a post:
-
 ```bash
 curl -X POST http://localhost:8000/posts/ -H "Content-Type: application/json" -d '{"title": "Hello", "content": "First post!"}'
 ```
 
 ## 🛠 Admin Panel
+
+Visit:
 
 ```bash
 http://localhost:8000/admin
@@ -62,4 +60,6 @@ This project doesn't currently use a specific license. If you'd like to open-sou
 
 ---
 
-## 🙋‍♂️ Author Built with ❤️ by https://www.linkedin.com/in/muhd8/
+## 🙋‍♂️ Author
+
+Built with ❤️ by [Muhammad](https://www.linkedin.com/in/muhd8/)
