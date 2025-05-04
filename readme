@@ -1,4 +1,3 @@
-````markdown
 # Beam Blog
 
 Beam Blog is a simple logging API built with FastAPI and SQLite. It allows users to post and comment on blog entries. There's no login required for now, as administrative tasks can be handled via the built-in admin panel powered by SQLAdmin.
