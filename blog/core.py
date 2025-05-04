@@ -20,7 +20,7 @@ def create_post(blog:blogSchema,image: UploadFile, db:Session):
         slug = blog["slug"]
     )
     if not blog:
-        raise HTTPException(details='heyyy')
+        raise HTTPException(details='blog not found',status_code=404)
 
     db.add(blog)
     db.commit()
