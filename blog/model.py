@@ -15,7 +15,7 @@ class Blogs(Base):
     title = Column(String(225))
     content= Column(String)
     image = Column(String,nullable=True)
-    author_id = Column(Integer,ForeignKey("user.id", ondelete="CASCADE"))
+    author_id = Column(Integer,ForeignKey("users.id", ondelete="CASCADE"))
     slug = Column(String(255), unique=True)
     status = Column(Enum(STATUS,native_enum=False),server_default=STATUS.draft)
     created_at = Column(DateTime, default=datetime.utcnow)
